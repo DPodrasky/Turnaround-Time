@@ -47,13 +47,18 @@ function setDeliveryDate (today, caseType) {
   these if statements force the calculated delivery date to fall on Monday */
   if (deliveryDate.getDay() == 6) {
     deliveryDate = new Date(date.setDate(date.getDate() + 2 ));
+    tatCount += 2;
   }
   if (deliveryDate.getDay() == 0) {
    deliveryDate = new Date(date.setDate(date.getDate() + 1 ));
+    tatCount += 1;
   }
 
   return `The package will arrive in ${tatCount + businessDays} days, on ${deliveryDate.toDateString()}.`;
 }
 
 setDeliveryDate(zdate, "complex");
-console.log(setDeliveryDate(zdate, "complex"));
+//zdate is a variable the inputs today's date automatically for this function
+/* you can change the TAT in business days by choosing between 3 categories of
+cases: "modelless", "traditional", and "complex" */
+console.log(setDeliveryDate(zdate, "modelless"));
