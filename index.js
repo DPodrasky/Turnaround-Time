@@ -2,24 +2,11 @@
 in the date parameter */
 const zdate = new Date();
 
-/* caseType would give a TAT of 7 - 18 business days depending on the type of
-case. The string argument choices are "modelless", "traditional", "complex" */
-function setDeliveryDate (today, caseType) {
-  //setting today's date
-  let date = new Date();
-  //used to increment the date by 1
-  let nextDate = 0;
-  /*The delivery date based on our turnaround time in business days
-  and taking into account weekends*/
-  let deliveryDate = 0;
-  //our TAT in business days
-  let businessDays = 0;
-  //used to increment the TAT to compensate for weekends
-  let tatCount = 0;
-  //The number for each day of the week 0 = Sunday, 6 = Saturday
-  let currentDay = 0;
 
-  //changes TAT in business days based on the argument given
+//sets a TAT is business days depending on the type of case
+let setTatInBusinessDays = function (caseType) {
+  let businessDays = 0;
+
   switch (caseType) {
     case "modelless": businessDays = 7;
       break;
@@ -28,8 +15,15 @@ function setDeliveryDate (today, caseType) {
     case "complex": businessDays = 18;
   }
 
-   /* increments through each day and adds more days to account for
-   weekends */
+  return businessDays;
+}
+
+/* if the delivery is estimated for a weekend, this function pushes it to Monday.
+it begins by  adding days so that calculations are correct for business days
+estimated TAT. */
+
+let avoidWeekends = function (businessDays, nextDate, currentDay, tatCount, deliveryDate, date ) {
+
   for (let i = 0; i < businessDays; i++ ) {
     nextDate = new Date(date.setDate(date.getDate() + 1));
     currentDay = nextDate.getDay();
@@ -53,11 +47,33 @@ function setDeliveryDate (today, caseType) {
    deliveryDate = new Date(date.setDate(date.getDate() + 1 ));
     tatCount += 1;
   }
-
   return `The package will arrive in ${tatCount + businessDays} days, on ${deliveryDate.toDateString()}.`;
 }
 
-setDeliveryDate(zdate, "complex");
+
+/* *** Main Function *** */
+/* caseType would give a TAT of 7 - 18 business days depending on the type of
+case. The string argument choices are "modelless", "traditional", "complex" */
+function setDeliveryDate (today, caseType) {
+  //setting today's date
+  let date = new Date();
+  //used to increment the date by 1
+  let nextDate = 0;
+  /*The delivery date based on our turnaround time in business days
+  and taking into account weekends*/
+  let deliveryDate = 0;
+  //our TAT in business days
+  let businessDays = setTatInBusinessDays(caseType);
+  //used to increment the TAT to compensate for weekends
+  let tatCount = 0;
+  //The number for each day of the week 0 = Sunday, 6 = Saturday
+  let currentDay = 0;
+
+
+  return avoidWeekends(businessDays, nextDate, currentDay, tatCount, deliveryDate, date );
+}
+
+
 //zdate is a variable the inputs today's date automatically for this function
 /* you can change the TAT in business days by choosing between 3 categories of
 cases: "modelless", "traditional", and "complex" */
